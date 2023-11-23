@@ -1,0 +1,31 @@
+﻿@page "/products/{Slug}"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject ProductApiClient ProductApi
+
+<PageTitle>Product</PageTitle>
+
+@if (product == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <h1>@product.ProductName</h1>
+    <p>
+      @product.ProductDescription
+    </p>
+}
+
+@code {
+    [Parameter]
+    public string? Slug { get; set; }
+
+    private ProductDto? product;
+
+    protected override async Task OnInitializedAsync()
+    {
+        product = await ProductApi.GetDetailsAsync(Slug ?? "undefined");
+    }
+}

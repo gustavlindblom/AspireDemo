@@ -1,0 +1,48 @@
+﻿@page "/products"
+@attribute [StreamRendering(true)]
+@attribute [OutputCache(Duration = 5)]
+
+@inject ProductApiClient ProductApi
+
+<PageTitle>Products</PageTitle>
+
+<h1>Products</h1>
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Description</th>
+                <th>Slug</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td>@product.ProductName</td>
+                    <td>@product.ProductDescription</td>
+                    <td><a href="/products/@product.Slug">@product.Slug</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <NavLink class="btn btn-primary" href="products/create">
+        <span class="bi bi-plus-square" aria-hidden="true"></span> Create
+    </NavLink>
+}
+
+@code {
+    private ProductDto[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductApi.GetProductsAsync();
+    }
+}
